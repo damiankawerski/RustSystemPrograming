@@ -73,17 +73,53 @@ fn test_rzymskie() {
 // zadanie 5
 
 fn dodaj_pisemnie(a: &str, b: &str) -> String {
-    let mut result: String = String::new();
+    let mut result = String::new();
+    let mut carry = 0;
+    let mut a_chars = a.chars().rev();
+    let mut b_chars = b.chars().rev();
 
-    let mut index = 0;
+    loop {
+        let a_digit = a_chars.next().and_then(|c| c.to_digit(10));
+        let b_digit = b_chars.next().and_then(|c| c.to_digit(10));
 
-    while index < a.len() && index < b.len() {
+        if a_digit.is_none() && b_digit.is_none() && carry == 0 {
+            break;
+        }
 
+        let sum = a_digit.unwrap_or(0) + b_digit.unwrap_or(0) + carry;
+        carry = sum / 10;
+        result.push(std::char::from_digit(sum % 10, 10).unwrap());
     }
 
-    result
+    result.chars().rev().collect()
+}
+
+
+fn test_dodaj_pisemnie() {
+    let test_cases = [
+        ("1", "3", "4"),
+        ("8", "3", "11"),
+        ("10", "23", "33"),
+        ("1", "0", "1"),
+        ("11", "00", "11"),
+        ("131", "9900", "10031"),
+        ("998", "7", "1005"),
+        ("24872947", "294729478", "319602425"),
+        ("5924729874298749827418582", "6782893629472094209740298", "12707623503770844037158880"),
+    ];
+
+    for (a, b, expected) in test_cases.iter() {
+        let result = dodaj_pisemnie(a, b);
+        if result == *expected {
+            println!("Test PASSED: dodaj_pisemnie(\"{}\", \"{}\") == \"{}\"", a, b, expected);
+
+        } else {
+            println!("Test FAILED: dodaj_pismnie(\"{}\", \"{}\") == \"{}\", got \"{}\"", a, b, expected, result);
+
+        }
+    }
 }
 
 fn main() {
-    test_rzymskie();
+    test_dodaj_pisemnie();
 }
