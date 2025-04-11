@@ -17,5 +17,6 @@ fn main() {
     let u: f32 = 10.1233;
 
     let p: i8 = k as i8;
+    let k: i8 = 18;
 
 }
