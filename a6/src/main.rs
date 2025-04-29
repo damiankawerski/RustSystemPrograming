@@ -118,10 +118,6 @@ fn indeksy_iter(arr: Vec<&str>, element: &str) -> Vec<usize>{
     arr.into_iter().enumerate().filter_map(|(index, txt)| if txt == element {Some(index)} else {None}).collect()
 }
 
-// zadanie 3
-fn zadanie3(arr: Vec<i32>, element: i32) -> Vec<usize> {
-    
-}
 
 fn main() {
     
