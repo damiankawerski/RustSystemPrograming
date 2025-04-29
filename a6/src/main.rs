@@ -118,22 +118,12 @@ fn indeksy_iter(arr: Vec<&str>, element: &str) -> Vec<usize>{
     arr.into_iter().enumerate().filter_map(|(index, txt)| if txt == element {Some(index)} else {None}).collect()
 }
 
+// zadanie 3
+fn zadanie3(arr: Vec<i32>, element: i32) -> Vec<usize> {
+    
+}
+
 fn main() {
-    // english_dict_iter();
-    // expon_iter();
-    // two_squares_iter();
-    // reciprocals_iter();
-    // last_func();
-
-    let vec: Vec<&str> = [
-        "ddouble",
-        "costam",
-        "spac",
-        "pizza",
-    ].to_vec();
-
-    println!("{:?}", double_lettered(vec));
-
-
+    
 }
  
