@@ -1,4 +1,3 @@
-use std::fmt;
 use std::io::{self, Write};
 use rand::seq::SliceRandom;
 use rand::thread_rng;
@@ -11,15 +10,14 @@ enum Suit {
     Spades,
 }
 
-impl fmt::Display for Suit {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let symbol = match self {
+impl Suit {
+    fn symbol(&self) -> char {
+        match self {
             Suit::Hearts => '♥',
             Suit::Diamonds => '♦',
             Suit::Clubs => '♣',
             Suit::Spades => '♠',
-        };
-        write!(f, "{}", symbol)
+        }
     }
 }
 
@@ -40,18 +38,15 @@ impl Value {
             Value::Ace => 11,
         }
     }
-}
 
-impl fmt::Display for Value {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let s = match self {
+    fn as_str(&self) -> String {
+        match self {
             Value::Num(n) => n.to_string(),
             Value::Jack => "J".to_string(),
             Value::Queen => "Q".to_string(),
             Value::King => "K".to_string(),
             Value::Ace => "A".to_string(),
-        };
-        write!(f, "{}", s)
+        }
     }
 }
 
@@ -61,9 +56,9 @@ struct Card {
     value: Value,
 }
 
-impl fmt::Display for Card {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{}{}", self.value, self.suit)
+impl Card {
+    fn as_str(&self) -> String {
+        format!("{}{}", self.value.as_str(), self.suit.symbol())
     }
 }
 
@@ -124,7 +119,7 @@ impl Hand {
 
     fn display(&self) {
         for card in &self.cards {
-            print!("{} ", card);
+            print!("{} ", card.as_str());
         }
         println!("-> {} pkt", self.points());
     }
@@ -153,7 +148,7 @@ fn main() {
         hand2.add(deck.draw().unwrap());
 
         println!("Gracz 1:");
-        loop {      
+        loop {
             hand1.display();
             if hand1.points() == 21 {
                 println!("Gracz 1 ma oczko!");
@@ -201,6 +196,7 @@ fn main() {
                 break;
             }
         }
+
         let p1 = hand1.points();
         let p2 = hand2.points();
 

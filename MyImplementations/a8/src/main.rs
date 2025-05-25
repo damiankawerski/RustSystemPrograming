@@ -1,3 +1,5 @@
+
+#[derive(Debug)]
 struct RandGen {
     seed: i64
 }
@@ -7,70 +9,77 @@ impl RandGen {
         RandGen {seed}
     }
 
-fn gen_range(&mut self, min: i64, max: i64) -> i64 {
-    if min > max {
-        panic!("min > max.");
+    fn gen_range(&mut self, min: i64, max: i64) -> i64 {
+        if min > max {
+            panic!("min > max.");
+        }
+
+        let a: i64 = 1664525;
+        let c: i64 = 1013904223;
+        let m: i64 = i64::MAX;
+
+        self.seed = self
+            .seed
+            .wrapping_mul(a)
+            .wrapping_add(c)
+            .rem_euclid(m); // seed zawsze >= 0
+
+        let zakres = (max - min + 1).max(1);
+        min + self.seed.rem_euclid(zakres)
     }
-
-    let a: i64 = 1664525;
-    let c: i64 = 1013904223;
-    let m: i64 = i64::MAX;
-
-    self.seed = self
-        .seed
-        .wrapping_mul(a)
-        .wrapping_add(c)
-        .rem_euclid(m); // seed zawsze >= 0
-
-    let zakres = (max - min + 1).max(1);
-    min + self.seed.rem_euclid(zakres)
 }
 
 
-
-
-}
-
-struct Urna  {
-    los: RandGen,
+struct Urna {
+    generator: RandGen,
     znaki: Vec<char>,
 }
 
 impl Urna {
-    fn new(rng: RandGen) -> Self {
-        Urna { los: rng, znaki: Vec::new() }
-    }
-
-    fn doloz(&mut self, c: char) {
-        self.znaki.push(c);
-    }
-
-    fn rozmiar(&self) -> usize{
-        self.znaki.len()
-    }
-
-    fn losuj_bez_us(&mut self) -> Option<char> {
-        if(self.znaki.is_empty()) {
-            return None;
-        }
-
-        let i = self.los.gen_range(0, (self.znaki.len() - 1) as i64) as usize;
-
-        Some(self.znaki[i])
+    fn new(gene: RandGen) -> Self {
+        Self { generator: gene, znaki: Vec::new() }
     }
 
     fn losuj_z_us(&mut self) -> Option<char> {
         if self.znaki.is_empty() {
             return None;
         }
-        let i = self.los.gen_range(0, (self.znaki.len() - 1) as i64) as usize;
-        Some(self.znaki.remove(i))
+
+        let max = self.znaki.len() -1;
+
+        let index = self.generator.gen_range(0, max as i64);
+
+        let result = Some (self.znaki[index as usize]);
+
+        self.znaki.remove(index as usize);
+
+        result
     }
 
+    fn losuj_bez_us(&mut self) -> Option<char> {
+        if self.znaki.is_empty() {
+            return None;
+        }
 
+        let max = self.znaki.len() -1;
 
+        let index = self.generator.gen_range(0, max as i64);
+
+        let result = Some (self.znaki[index as usize]);
+
+        result
+    }
+
+    fn rozmiar(&self) -> usize {
+        self.znaki.len()
+    }
+
+    fn doloz(&mut self, znak: char) {
+        self.znaki.push(znak);
+    }
 
 }
+
 
 
 fn main() {
@@ -105,4 +114,3 @@ fn main() {
     println!("{:?}", z.is_none());
     println!("{:?}", urna.rozmiar() == 0);
 }
-
